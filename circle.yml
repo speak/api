@@ -1,0 +1,7 @@
+machine:
+  ruby:
+    version: 2.1.5
+
+test:
+  override:
+    - RACK_ENV=test bundle exec rspec --format RspecJunitFormatter --out /tmp/circle-junit.bI8cVHl/rspec/rspec.xml spec --format progress

@@ -1,0 +1,44 @@
+postgres:
+  build: ./build/postgres/
+  ports:
+    - "5432:5432"
+  volumes:
+    - /var/lib/docker/speak_data/postgres:/var/lib/postgresql
+
+guest:
+  build: ../guest
+  volumes:
+    - ../guest/src:/guest/src
+    - ../guest/node_modules:/guest/node_modules
+  log_driver: "json-file"
+  log_opt:
+    max-size: "20k"
+    max-file: "20"
+  ports:
+    - "5002:5002"
+    
+api:
+  build: ./
+  command: ./script/start.sh
+  volumes:
+    - ./:/api
+  volumes_from:
+    - box
+  ports:
+    - "8080:8080"
+  links:
+    - postgres
+  environment:
+    RACK_ENV: development
+    DATABASE_USERNAME: postgres
+    DATABASE_PASSWORD: postgres
+    DATABASE_HOST: postgres
+    BUNDLE_PATH: /box
+    SENTRY_DSN: 
+    APP_URL: http://docker:5002
+    API_URL: http://docker:8080
+
+box:
+  image: busybox
+  volumes:
+    - /box

@@ -1,0 +1,27 @@
+default: &default
+  adapter: postgresql
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
+  host: <%= ENV["DATABASE_HOST"] %>
+  pool: 5
+  timeout: 5000
+
+staging:
+  <<: *default
+  database: api-staging
+  port: 10308
+  sslmode: "require"
+  
+production:
+  <<: *default
+  database: api-production
+  port: 10308
+  sslmode: "require"
+
+development:
+  <<: *default
+  database: development
+
+test:
+  <<: *default
+  database: test
